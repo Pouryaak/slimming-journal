@@ -28,7 +28,7 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <main className="pb-16">{children}</main>
+      <main className="pb-21">{children}</main>
 
       <MobileNavbar />
     </>
