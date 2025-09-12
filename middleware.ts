@@ -40,9 +40,7 @@ export async function middleware(request: NextRequest) {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user ?? null;
 
-  console.log('[MIDDLEWARE] user', user?.id);
-
-  const isDashboard = pathname.startsWith('/dashboard') || pathname === '/';
+  const isDashboard = pathname.startsWith('/');
   if (isDashboard && !user && !isAuthPage && !isPublicAsset) {
     const redirectTo = encodeURIComponent(pathname + (search || ''));
     const url = new URL(`/sign-in?redirectTo=${redirectTo}`, request.url);

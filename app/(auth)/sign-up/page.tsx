@@ -1,15 +1,18 @@
-// app/(auth)/sign-up/page.tsx
 'use client';
 
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { z } from 'zod';
+import Link from 'next/link';
+// Import hooks from react-dom for Server Actions
+import { useFormState, useFormStatus } from 'react-dom';
+
+// Your Zod schema and type imports
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import Link from 'next/link';
+import { AuthSchema, AuthValues } from '@/lib/validation/auth';
 
-import { signUpWithEmailPassword } from '@/lib/data/auth';
+// Your new Server Action and its return type
+import { signUpUser, FormState } from '@/lib/data/auth';
 
+// Shadcn UI component imports
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -21,31 +24,35 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Card } from '@/components/ui/card';
-import { AuthSchema, AuthValues } from '@/lib/validation/auth';
+
+/**
+ * A separate component for the submit button.
+ * It uses the useFormStatus hook to automatically track the form's pending state,
+ * which simplifies the logic in the main component.
+ */
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="h-11 w-full" disabled={pending}>
+      {pending ? 'Creating account…' : 'Sign up'}
+    </Button>
+  );
+}
 
 export default function SignUpPage() {
-  const router = useRouter();
-  const [topError, setTopError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  // The initial state for our form action
+  const initialState: FormState = null;
 
+  // Wire up the server action with useFormState
+  const [state, formAction] = useFormState(signUpUser, initialState);
+
+  // react-hook-form setup remains the same for client-side validation
   const form = useForm<AuthValues>({
     resolver: zodResolver(AuthSchema),
     defaultValues: { email: '', password: '' },
     mode: 'onTouched',
   });
-
-  async function onSubmit(values: AuthValues) {
-    setTopError(null);
-
-    startTransition(async () => {
-      const res = await signUpWithEmailPassword(values);
-      if (!res.ok) {
-        setTopError(res.message);
-        return;
-      }
-      router.replace('/');
-    });
-  }
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center p-5">
@@ -58,11 +65,14 @@ export default function SignUpPage() {
         </div>
 
         <Card className="rounded-xl border border-[--color-border] bg-[--color-card] p-4 sm:p-6">
+          {/* We keep the react-hook-form provider for client-side validation UI */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {topError && (
-                <div className="rounded-lg border border-[--color-border] bg-black/10 px-3 py-2 text-sm">
-                  {topError}
+            {/* The action prop connects the form directly to the server action */}
+            <form action={formAction} className="space-y-4">
+              {/* Display server-side errors returned from the action */}
+              {state?.error && (
+                <div className="rounded-lg border border-[--color-border] bg-black/10 px-3 py-2 text-sm text-red-500">
+                  {state.message}
                 </div>
               )}
 
@@ -107,15 +117,7 @@ export default function SignUpPage() {
                 )}
               />
 
-              <Button
-                type="submit"
-                className="h-11 w-full"
-                disabled={isPending || form.formState.isSubmitting}
-              >
-                {isPending || form.formState.isSubmitting
-                  ? 'Creating account…'
-                  : 'Sign up'}
-              </Button>
+              <SubmitButton />
             </form>
           </Form>
         </Card>

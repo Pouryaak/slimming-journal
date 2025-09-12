@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getProfile } from '@/lib/data/profiles';
+import { MobileNavbar } from '@/components/shared/mobile-navbar';
 
 export default async function DashboardLayout({
   children,
@@ -25,5 +26,11 @@ export default async function DashboardLayout({
     redirect('/welcome');
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <main className="pb-16">{children}</main>
+
+      <MobileNavbar />
+    </>
+  );
 }

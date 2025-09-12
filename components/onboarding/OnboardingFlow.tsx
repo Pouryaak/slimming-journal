@@ -47,6 +47,7 @@ const OnboardingFlow = () => {
     ['height', 'weight', 'unitSystem'],
     ['goalWeight', 'weeklyWeightGoal'],
     ['weekStart'],
+    [],
   ];
 
   interface StepProps {
@@ -76,7 +77,9 @@ const OnboardingFlow = () => {
     });
   }, [api]);
 
-  async function onNext() {
+  async function onNext(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+
     const result = await form.trigger(stepFields[step]);
     if (!result) return;
     api?.scrollNext();
@@ -110,7 +113,10 @@ const OnboardingFlow = () => {
             <Button
               variant="outline"
               disabled={step === 0}
-              onClick={() => api?.scrollPrev()}
+              onClick={(e) => {
+                e.preventDefault();
+                api?.scrollPrev();
+              }}
               size="lg"
             >
               Back
@@ -126,7 +132,7 @@ const OnboardingFlow = () => {
                 variant="outline"
                 size="lg"
                 disabled={step === 4}
-                onClick={onNext}
+                onClick={(e) => onNext(e)}
                 type="button"
               >
                 Next
