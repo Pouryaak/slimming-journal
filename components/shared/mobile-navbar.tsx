@@ -19,12 +19,13 @@ export function MobileNavbar() {
   ];
 
   return (
-    // This nav is fixed to the bottom, spans the full width, and has a border on top.
     <nav className="bg-background fixed bottom-0 w-full border-t">
       <div className="flex h-21 items-center justify-around pb-5">
         {navLinks.map((link) => {
-          const isActive = pathname === link.href;
-
+          const isActive =
+            link.href === '/dashboard'
+              ? pathname === link.href
+              : pathname.startsWith(link.href);
           return (
             <Link
               href={link.href}
