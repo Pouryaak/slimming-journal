@@ -20,7 +20,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6 p-4">
-      <h1 className="text-2xl font-bold">Settings</h1>
+      <h1 className="text-2xl font-bold">Profile Settings</h1>
 
       <Card>
         <CardContent className="p-0">
