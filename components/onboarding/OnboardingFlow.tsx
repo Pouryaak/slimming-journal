@@ -86,11 +86,14 @@ const OnboardingFlow = () => {
   }
   async function onSubmit(data: FormInput) {
     startTransition(async () => {
-      const result = await completeOnboarding(data);
+      const result = await completeOnboarding(null, data);
 
-      if (result?.error) {
+      if (result && result.status === 'error') {
         toast.error('Something went wrong', {
-          description: result.error,
+          description:
+            typeof result.error === 'string'
+              ? result.error
+              : 'An unexpected error occurred.',
         });
       }
     });

@@ -25,6 +25,7 @@ export const completeOnboarding = withUser(async (user, data: FormInput) => {
   if (error) {
     console.error('Supabase error:', error.message);
     return {
+      status: 'error',
       error: 'Sorry, we could not update your profile. Please try again.',
     };
   }
