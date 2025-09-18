@@ -70,3 +70,9 @@ export async function signInWithEmailPassword(params: {
 
   return { ok: true };
 }
+
+export async function signOutUser() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  return redirect('/sign-in');
+}

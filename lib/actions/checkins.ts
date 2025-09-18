@@ -1,0 +1,101 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
+import { DailyCheckin, WeeklyCheckin } from '../data/checkins';
+import { createClient } from '../supabase/server';
+import { DailyCheckinSchema } from '../validation/checkin';
+import { getAuthenticatedUser } from './auth';
+import { withUser } from './safe-actions';
+import { convertFieldsToNumber } from '../utils';
+
+export type MonthlyCheckins = {
+  daily: DailyCheckin[];
+  weekly: WeeklyCheckin[];
+};
+
+export const getMonthlyCheckins = withUser(
+  async (user, date: Date): Promise<MonthlyCheckins> => {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+      .toISOString()
+      .slice(0, 10);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+      .toISOString()
+      .slice(0, 10);
+
+    const supabase = await createClient();
+
+    const [dailyResponse, weeklyResponse] = await Promise.all([
+      supabase
+        .from('daily_checkins')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', startOfMonth)
+        .lte('date', endOfMonth),
+      supabase
+        .from('weekly_checkins')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('date', startOfMonth)
+        .lte('date', endOfMonth),
+    ]);
+    if (dailyResponse.error || weeklyResponse.error) {
+      console.error(
+        'Error fetching monthly checkins:',
+        dailyResponse.error || weeklyResponse.error,
+      );
+      return { daily: [], weekly: [] };
+    }
+
+    return { daily: dailyResponse.data, weekly: weeklyResponse.data };
+  },
+);
+
+export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
+  const supabase = await createClient();
+
+  const rawFormData = Object.fromEntries(formData.entries());
+
+  const numericData = convertFieldsToNumber(rawFormData, [
+    'calories_goal',
+    'calories_consumed',
+    'protein_consumed_g',
+    'carbs_consumed_g',
+    'steps',
+    'calories_burned',
+    'fasting_hours',
+    'water_ml',
+  ]);
+
+  const validatedFields = DailyCheckinSchema.safeParse(numericData);
+  if (!validatedFields.success) {
+    return {
+      status: 'error',
+      error: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { id, ...dataToUpsert } = validatedFields.data;
+
+  let result;
+
+  if (id) {
+    result = await supabase
+      .from('daily_checkins')
+      .update(dataToUpsert)
+      .eq('id', id)
+      .eq('user_id', user.id);
+  } else {
+    result = await supabase
+      .from('daily_checkins')
+      .insert({ ...dataToUpsert, user_id: user.id });
+  }
+
+  if (result.error) {
+    console.error('Error upserting daily checkin:', result.error);
+    return { status: 'error', error: 'Failed to save your check-in.' };
+  }
+
+  revalidatePath('/check-in');
+  revalidatePath('/dashboard');
+  return { status: 'success', data: result.data };
+});

@@ -22,3 +22,16 @@ export function getStartOfWeek(
   d.setHours(0, 0, 0, 0);
   return d;
 }
+
+export function convertFieldsToNumber<T extends Record<string, any>>(
+  obj: T,
+  keys: (keyof T)[],
+): T {
+  const newObj = { ...obj };
+  for (const key of keys) {
+    if (newObj[key] !== undefined && newObj[key] !== '') {
+      newObj[key] = Number(newObj[key]) as any;
+    }
+  }
+  return newObj;
+}

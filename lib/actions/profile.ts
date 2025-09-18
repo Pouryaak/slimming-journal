@@ -9,6 +9,7 @@ import {
   ProfileUpdateGoalsSchema,
   ProfileUpdateSchema,
 } from '../validation/profile';
+import { convertFieldsToNumber } from '../utils';
 
 export const updateProfile = withUser(
   async (user, formData: FormData): Promise<ProfileFormState> => {
@@ -16,10 +17,7 @@ export const updateProfile = withUser(
 
     const supabase = await createClient();
     const rawFormData = Object.fromEntries(formData.entries());
-    const numericFormData = {
-      ...rawFormData,
-      height_cm: Number(rawFormData.height_cm),
-    };
+    const numericFormData = convertFieldsToNumber(rawFormData, ['height_cm']);
 
     const validatedFields = ProfileUpdateSchema.safeParse(numericFormData);
 
@@ -62,13 +60,12 @@ export const updateProfileGoals = withUser(
     const supabase = await createClient();
     const rawFormData = Object.fromEntries(formData.entries());
 
-    const numericFormData = {
-      ...rawFormData,
-      weight_kg: Number(rawFormData.weight_kg),
-      goal_weight_kg: Number(rawFormData.goal_weight_kg),
-      weekly_weight_goal_kg: Number(rawFormData.weekly_weight_goal_kg),
-      base_calories: Number(rawFormData.base_calories),
-    };
+    const numericFormData = convertFieldsToNumber(rawFormData, [
+      'weight_kg',
+      'goal_weight_kg',
+      'weekly_weight_goal_kg',
+      'base_calories',
+    ]);
 
     const validatedFields = ProfileUpdateGoalsSchema.safeParse(numericFormData);
 

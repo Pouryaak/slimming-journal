@@ -33,8 +33,8 @@ export function CheckedInState({
   }
 
   const calorieDifference =
-    todaysCheckin.calories_consumed -
-    (todaysCheckin.calories_goal + todaysCheckin.calories_burned);
+    (todaysCheckin.calories_consumed ?? 0) -
+    ((todaysCheckin.calories_goal ?? 0) + (todaysCheckin.calories_burned ?? 0));
   const calorieDescription =
     calorieDifference <= 0
       ? `Under budget. Great job!`
@@ -43,7 +43,7 @@ export function CheckedInState({
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader className="items-center text-center">
+        <CardHeader className="flex flex-col items-center text-center">
           <Lottie
             animationData={successAnimation}
             loop={false}
@@ -69,13 +69,13 @@ export function CheckedInState({
           />
           <StatsCard
             title="Calories Burned"
-            value={todaysCheckin.calories_burned}
+            value={todaysCheckin.calories_burned ?? 0}
             icon={Flame}
             description="From workouts"
           />
           <StatsCard
             title="Steps"
-            value={todaysCheckin.steps}
+            value={todaysCheckin.steps ?? 0}
             icon={Footprints}
             description="Total for the day"
           />

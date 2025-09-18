@@ -1,6 +1,8 @@
 import Link from 'next/link';
-import { ChevronRight, User, Target } from 'lucide-react';
+import { ChevronRight, User, Target, LogOut } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { signOutUser } from '@/lib/data/auth';
 
 export default function ProfilePage() {
   const menuItems = [
@@ -45,6 +47,12 @@ export default function ProfilePage() {
           </ul>
         </CardContent>
       </Card>
+      <form action={signOutUser}>
+        <Button variant="outline" className="w-full justify-start gap-4 py-6">
+          <LogOut className="text-muted-foreground h-5 w-5" />
+          <span>Sign Out</span>
+        </Button>
+      </form>
     </div>
   );
 }

@@ -120,3 +120,34 @@
     @apply bg-background text-foreground;
   }
 }
+
+.rdp-day {
+  position: relative;
+}
+
+/* Shared dot base (before/after used so two dots can show on the same day) */
+.day-with-daily-dot::after,
+.day-with-weekly-dot::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  transform: translateX(-50%);
+}
+
+.day-with-daily-dot::after {
+  left: 56%;
+  background: #10b981;
+}
+
+.day-with-weekly-dot::before {
+  left: 30%;
+  background: #f59e0b;
+  top: 101%;
+}
+
+.rdp-day--outside.day-with-daily-dot::after,
+.rdp-day--outside.day-with-weekly-dot::before {
+  display: none;
+}

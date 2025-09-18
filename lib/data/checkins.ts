@@ -5,21 +5,6 @@ import { createClient } from '@/lib/supabase/server';
 import { getStartOfWeek } from '../utils';
 import { getProfile } from './profiles';
 
-export type DailyCheckin = {
-  id: string;
-  user_id: string;
-  date: string;
-  calories_goal: number;
-  calories_consumed: number;
-  protein_consumed_g: number;
-  carbs_consumed_g: number;
-  steps: number;
-  calories_burned: number;
-  fasting_hours: number;
-  water_ml: number;
-  created_at: string;
-};
-
 export async function getTodaysCheckin() {
   const supabase = await createClient();
 
@@ -83,3 +68,53 @@ export async function getThisWeekCheckin() {
 
   return data;
 }
+
+export async function getCheckinSpecificDate(date: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null;
+  }
+  const { data, error } = await supabase
+    .from('daily_checkins')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('date', date)
+    .single();
+
+  if (error) {
+    console.error('Error fetching check-in for specific date:', error);
+    return null;
+  }
+
+  return data;
+}
+
+export type DailyCheckin = {
+  id: string;
+  user_id: string;
+  date: string;
+  calories_goal: number | null;
+  calories_consumed: number | null;
+  protein_consumed_g: number | null;
+  carbs_consumed_g: number | null;
+  steps: number | null;
+  calories_burned: number | null;
+  fasting_hours: number | null;
+  water_ml: number | null;
+  created_at: string;
+};
+
+export type WeeklyCheckin = {
+  id: string;
+  user_id: string;
+  date: string;
+  weight_kg: number | null;
+  body_fat_percentage: number | null;
+  muscle_mass_kg: number | null;
+  progress_photo_url: string | null;
+  created_at: string;
+};
