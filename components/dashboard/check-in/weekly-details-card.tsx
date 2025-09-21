@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { WeeklyCheckin } from '@/lib/data/checkins';
 import { Weight, Percent, Dumbbell, SquarePen } from 'lucide-react';
+import Link from 'next/link';
 
 interface WeeklyDetailsProps {
   checkin: WeeklyCheckin;
@@ -31,9 +32,11 @@ export function WeeklyDetailsCard({ checkin }: WeeklyDetailsProps) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Weekly Summary</span>
-          <Button variant="outline">
-            <SquarePen />
-            Edit
+          <Button variant="outline" asChild>
+            <Link href={`/check-in/${checkin.date}?tab=weekly`}>
+              <SquarePen />
+              Edit
+            </Link>
           </Button>
         </CardTitle>
       </CardHeader>

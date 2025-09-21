@@ -12,6 +12,8 @@ export function withUser<T, S extends ActionState>(
       data: { user },
     } = await supabase.auth.getUser();
 
+    console.log('[withUser HOF] User check:', user);
+
     if (!user) {
       return { status: 'error', error: 'Authentication is required.' } as S;
     }

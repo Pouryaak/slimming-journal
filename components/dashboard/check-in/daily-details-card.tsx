@@ -10,6 +10,7 @@ import {
   Dumbbell as Barbell,
   SquarePen,
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface DailyDetailsProps {
   checkin: DailyCheckin;
@@ -57,9 +58,11 @@ export function DailyDetailsCard({ checkin }: DailyDetailsProps) {
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Daily Summary</span>
-          <Button variant="outline">
-            <SquarePen />
-            Edit
+          <Button variant="outline" asChild>
+            <Link href={`/check-in/${checkin.date}?tab=daily`}>
+              <SquarePen />
+              Edit
+            </Link>
           </Button>
         </CardTitle>
       </CardHeader>

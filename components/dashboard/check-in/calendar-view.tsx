@@ -7,6 +7,8 @@ import { MonthlyCheckins } from '@/lib/actions/checkins';
 import { Button } from '@/components/ui/button';
 import { DailyDetailsCard } from './daily-details-card';
 import { WeeklyDetailsCard } from './weekly-details-card';
+import Link from 'next/link';
+import { formatDateForURL, todayDateString } from '@/lib/utils';
 
 interface CalendarViewProps {
   initialCheckins: MonthlyCheckins;
@@ -15,6 +17,9 @@ interface CalendarViewProps {
 const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [monthlyCheckins, setMonthlyCheckins] = useState(initialCheckins);
+
+  const checkinUrl = (tab: 'daily' | 'weekly') =>
+    date ? `/check-in/${formatDateForURL(date)}?tab=${tab}` : '#';
 
   const dailyDates = useMemo(
     () => monthlyCheckins.daily.map((c) => new Date(c.date)),
@@ -52,21 +57,33 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
         />
 
         <div className="mt-8 w-full max-w-md space-y-4">
-          {selectedDateDailyEntries || selectedDateWeeklyEntries ? (
+          {!selectedDateDailyEntries && !selectedDateWeeklyEntries && (
+            <p className="text-muted-foreground text-center">
+              No entry for this day.
+            </p>
+          )}
+          {selectedDateDailyEntries ? (
             <>
-              {selectedDateDailyEntries && (
-                <DailyDetailsCard checkin={selectedDateDailyEntries} />
-              )}
-              {selectedDateWeeklyEntries && (
-                <WeeklyDetailsCard checkin={selectedDateWeeklyEntries} />
-              )}
+              <DailyDetailsCard checkin={selectedDateDailyEntries} />
             </>
           ) : (
             <div className="text-center">
-              <p className="text-muted-foreground">No entry for this day.</p>
-              <Button variant="outline" className="mt-4">
-                Add Check-in
+              <Button size="lg" asChild className="mt-4">
+                <Link href={checkinUrl('daily')}>Add Daily Check-in</Link>
               </Button>
+            </div>
+          )}
+          {selectedDateWeeklyEntries ? (
+            <>
+              <WeeklyDetailsCard checkin={selectedDateWeeklyEntries} />
+            </>
+          ) : (
+            <div className="text-center">
+              {!selectedDateWeeklyEntries && (
+                <Button size="lg" asChild className="mt-4">
+                  <Link href={checkinUrl('weekly')}>Add Weekly Check-in</Link>
+                </Button>
+              )}
             </div>
           )}
         </div>

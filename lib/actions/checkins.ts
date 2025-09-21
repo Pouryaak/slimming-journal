@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { DailyCheckin, WeeklyCheckin } from '../data/checkins';
 import { createClient } from '../supabase/server';
-import { DailyCheckinSchema } from '../validation/checkin';
+import { DailyCheckinSchema, WeeklyCheckinSchema } from '../validation/checkin';
 import { getAuthenticatedUser } from './auth';
 import { withUser } from './safe-actions';
 import { convertFieldsToNumber } from '../utils';
@@ -55,6 +55,8 @@ export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
 
   const rawFormData = Object.fromEntries(formData.entries());
 
+  console.log('rawFormData:', rawFormData);
+
   const numericData = convertFieldsToNumber(rawFormData, [
     'calories_goal',
     'calories_consumed',
@@ -66,6 +68,8 @@ export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
     'water_ml',
   ]);
 
+  console.log('Numeric Data:', numericData);
+
   const validatedFields = DailyCheckinSchema.safeParse(numericData);
   if (!validatedFields.success) {
     return {
@@ -73,6 +77,7 @@ export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
       error: validatedFields.error.flatten().fieldErrors,
     };
   }
+  console.log('validatedFields:', validatedFields);
 
   const { id, ...dataToUpsert } = validatedFields.data;
 
@@ -97,5 +102,60 @@ export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
 
   revalidatePath('/check-in');
   revalidatePath('/dashboard');
-  return { status: 'success', data: result.data };
+  return {
+    status: 'success',
+    message: 'check-in successful',
+    data: result.data,
+  };
 });
+
+export const upsertWeeklyCheckin = withUser(
+  async (user, formData: FormData) => {
+    const supabase = await createClient();
+
+    const rawFormData = Object.fromEntries(formData.entries());
+
+    const numericData = convertFieldsToNumber(rawFormData, [
+      'weight_kg',
+      'body_fat_percentage',
+      'muscle_mass_kg',
+    ]);
+
+    const validatedFields = WeeklyCheckinSchema.safeParse(numericData);
+    if (!validatedFields.success) {
+      return {
+        status: 'error',
+        error: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    const { id, ...dataToUpsert } = validatedFields.data;
+
+    let result;
+
+    if (id) {
+      result = await supabase
+        .from('weekly_checkins')
+        .update(dataToUpsert)
+        .eq('id', id)
+        .eq('user_id', user.id);
+    } else {
+      result = await supabase
+        .from('weekly_checkins')
+        .insert({ ...dataToUpsert, user_id: user.id });
+    }
+
+    if (result.error) {
+      console.error('Error upserting weekly checkin:', result.error);
+      return { status: 'error', error: 'Failed to save your check-in.' };
+    }
+
+    revalidatePath('/check-in');
+    revalidatePath('/dashboard');
+    return {
+      status: 'success',
+      message: 'check-in successful',
+      data: result.data,
+    };
+  },
+);

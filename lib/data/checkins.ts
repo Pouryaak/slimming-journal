@@ -4,6 +4,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { getStartOfWeek } from '../utils';
 import { getProfile } from './profiles';
+import { getAuthenticatedUser } from '../actions/auth';
 
 export async function getTodaysCheckin() {
   const supabase = await createClient();
@@ -18,12 +19,16 @@ export async function getTodaysCheckin() {
 
   const today = new Date().toISOString().slice(0, 10);
 
+  console.log(today);
+
   const { data, error } = await supabase
     .from('daily_checkins')
     .select('*')
     .eq('user_id', user.id)
     .eq('date', today)
     .maybeSingle();
+
+  console.log(data);
 
   if (error) {
     console.error('Error fetching daily checkin:', error);
@@ -70,27 +75,72 @@ export async function getThisWeekCheckin() {
 }
 
 export async function getCheckinSpecificDate(date: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getAuthenticatedUser();
   if (!user) {
     return null;
   }
-  const { data, error } = await supabase
-    .from('daily_checkins')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('date', date)
-    .single();
 
-  if (error) {
-    console.error('Error fetching check-in for specific date:', error);
+  const supabase = await createClient();
+
+  // Run both queries at the same time for better performance
+  const [dailyResponse, weeklyResponse] = await Promise.all([
+    supabase
+      .from('daily_checkins')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('date', date)
+      .maybeSingle(),
+    supabase
+      .from('weekly_checkins')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('date', date)
+      .maybeSingle(),
+  ]);
+
+  if (dailyResponse.error || weeklyResponse.error) {
+    console.error(
+      'Error fetching check-in for specific date:',
+      dailyResponse.error || weeklyResponse.error,
+    );
+
     return null;
   }
 
-  return data;
+  return {
+    daily: dailyResponse.data,
+    weekly: weeklyResponse.data,
+  };
+}
+
+export async function getWeightTrendData() {
+  const user = await getAuthenticatedUser();
+  if (!user) {
+    return [];
+  }
+
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  const startDate = threeMonthsAgo.toISOString().slice(0, 10);
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('weekly_checkins')
+    .select('date, weight_kg')
+    .eq('user_id', user.id)
+    .gte('date', startDate)
+    .order('date', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching weight trend data:', error);
+    return [];
+  }
+
+  return data.filter(
+    (item): item is { date: string; weight_kg: number } =>
+      item.weight_kg !== null,
+  );
 }
 
 export type DailyCheckin = {

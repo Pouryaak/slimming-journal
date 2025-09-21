@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 
 import sleepingAnimation from '@/public/animations/sleep.json';
+import Link from 'next/link';
 
 interface EmptyStateProps {
   name?: string | null;
@@ -19,6 +20,9 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ name = 'friend', streak = 0 }: EmptyStateProps) {
+  const today = new Date().toISOString().slice(0, 10);
+  const checkinUrl = `/check-in/${today}`;
+
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-col items-center text-center">
@@ -33,7 +37,9 @@ export function EmptyState({ name = 'friend', streak = 0 }: EmptyStateProps) {
         <CardDescription>Log your check-in to end your day.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center gap-4">
-        <Button size="lg">Do Today&apos;s Check-in</Button>
+        <Button size="lg" asChild>
+          <Link href={checkinUrl}>Do Today&apos;s Check-in</Link>
+        </Button>
         <p className="text-muted-foreground text-sm">
           🔥 Current Streak: {streak} days
         </p>

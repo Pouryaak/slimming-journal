@@ -35,3 +35,17 @@ export function convertFieldsToNumber<T extends Record<string, any>>(
   }
   return newObj;
 }
+
+export const normalize = (v: unknown) =>
+  v === undefined || v === null ? '' : (v as string | number);
+
+export const todayDateString = () => {
+  const today = new Date().toISOString().slice(0, 10);
+  return today;
+};
+
+export function formatDateForURL(date: Date): string {
+  const offset = date.getTimezoneOffset();
+  const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
+  return adjustedDate.toISOString().split('T')[0];
+}
