@@ -19,19 +19,32 @@ import {
 } from '@/components/ui/card';
 
 // Define the shape of the data this component expects
-interface WeightDataPoint {
+interface DataPoint {
   date: string;
   weight_kg: number | null;
+  body_fat_percentage: number | null;
+  muscle_mass_kg: number | null;
 }
 
-interface WeightTrendChartProps {
-  data: WeightDataPoint[];
+interface TrendChartProps {
+  data: DataPoint[];
+  metricKey: 'weight_kg' | 'body_fat_percentage' | 'muscle_mass_kg';
+  title: string;
+  description: string;
+  sign: string;
+  popoverTitle: string;
 }
 
-export function WeightTrendChart({ data }: WeightTrendChartProps) {
-  // Recharts needs the data to be formatted for the X-axis labels
+export function TrendChart({
+  data,
+  metricKey,
+  title,
+  description,
+  sign,
+  popoverTitle,
+}: TrendChartProps) {
   const formattedData = data
-    .filter((d) => d.weight_kg !== null && typeof d.weight_kg === 'number')
+    .filter((d) => d[metricKey] !== null && typeof d[metricKey] === 'number')
     .sort((a, b) => +new Date(a.date) - +new Date(b.date))
     .map((item) => ({
       ...item,
@@ -44,12 +57,10 @@ export function WeightTrendChart({ data }: WeightTrendChartProps) {
   console.log(formattedData);
 
   return (
-    <Card>
+    <Card className="mt-3">
       <CardHeader>
-        <CardTitle>Weight Trend ( 3 months )</CardTitle>
-        <CardDescription>
-          Your weight progress from weekly check-ins.
-        </CardDescription>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-80 w-full">
@@ -60,7 +71,7 @@ export function WeightTrendChart({ data }: WeightTrendChartProps) {
               <YAxis
                 domain={['auto', 'auto']}
                 fontSize={12}
-                tickFormatter={(v: number) => `${v}kg`}
+                tickFormatter={(v: number) => `${v}${sign}`}
               />
               <Tooltip
                 contentStyle={{
@@ -77,12 +88,14 @@ export function WeightTrendChart({ data }: WeightTrendChartProps) {
                   color: 'var(--light-accent-color)',
                   fontWeight: 600,
                 }}
-                formatter={(value: number) => [`${value} kg`, 'Weight']}
+                formatter={(value: number) => [
+                  `${value} ${sign}`,
+                  popoverTitle,
+                ]}
               />
               <Line
                 type="monotone"
-                dataKey="weight_kg"
-                // Use a solid, known-good color to verify visibility
+                dataKey={metricKey}
                 stroke="var(--light-accent-color, #4f46e5)"
                 strokeWidth={2}
                 dot={{ r: 4 }}

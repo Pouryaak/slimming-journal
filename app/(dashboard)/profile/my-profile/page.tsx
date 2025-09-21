@@ -20,7 +20,7 @@ const MyProfilePage = async () => {
 
   return (
     <div className="p-4">
-      <PageHeader title="My Profile" />
+      <PageHeader title="My Profile" backLink="/profile" />
 
       <div className="text-muted-foreground text-center">
         <ProfileForm profile={profile} />

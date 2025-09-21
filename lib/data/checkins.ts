@@ -127,7 +127,7 @@ export async function getWeightTrendData() {
 
   const { data, error } = await supabase
     .from('weekly_checkins')
-    .select('date, weight_kg')
+    .select('date, weight_kg, body_fat_percentage, muscle_mass_kg')
     .eq('user_id', user.id)
     .gte('date', startDate)
     .order('date', { ascending: true });
