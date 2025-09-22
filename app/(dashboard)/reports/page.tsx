@@ -8,7 +8,7 @@ export default async function ReportsPage() {
 
   return (
     <div className="p-4">
-      <PageHeader title="My Progress" backLink="/" />
+      <h1 className="text-2xl font-bold">My Progress</h1>
       <div className="mt-6">
         <TrendChart
           data={weightData}

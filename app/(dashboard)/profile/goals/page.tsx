@@ -18,7 +18,7 @@ const GoalsPage = async () => {
 
   return (
     <div className="p-4">
-      <PageHeader title="Goals" />
+      <PageHeader title="Goals" backLink="/profile" />
 
       <div className="text-muted-foreground text-center">
         <GoalsForm profile={profile} />

@@ -19,16 +19,12 @@ export async function getTodaysCheckin() {
 
   const today = new Date().toISOString().slice(0, 10);
 
-  console.log(today);
-
   const { data, error } = await supabase
     .from('daily_checkins')
     .select('*')
     .eq('user_id', user.id)
     .eq('date', today)
     .maybeSingle();
-
-  console.log(data);
 
   if (error) {
     console.error('Error fetching daily checkin:', error);
@@ -138,8 +134,17 @@ export async function getWeightTrendData() {
   }
 
   return data.filter(
-    (item): item is { date: string; weight_kg: number } =>
-      item.weight_kg !== null,
+    (
+      item,
+    ): item is {
+      date: string;
+      weight_kg: number;
+      body_fat_percentage: number;
+      muscle_mass_kg: number;
+    } =>
+      item.weight_kg !== null &&
+      item.body_fat_percentage !== null &&
+      item.muscle_mass_kg !== null,
   );
 }
 
