@@ -2,13 +2,12 @@
 
 import { Calendar } from '@/components/ui/calendar';
 import React, { useMemo, useState } from 'react';
-import { PageHeader } from '../profile/page-header';
 import { MonthlyCheckins } from '@/lib/actions/checkins';
 import { Button } from '@/components/ui/button';
 import { DailyDetailsCard } from './daily-details-card';
 import { WeeklyDetailsCard } from './weekly-details-card';
 import Link from 'next/link';
-import { formatDateForURL, todayDateString } from '@/lib/utils';
+import { formatDateForURL } from '@/lib/utils';
 
 interface CalendarViewProps {
   initialCheckins: MonthlyCheckins;

@@ -6,7 +6,8 @@ import { createClient } from '../supabase/server';
 import { DailyCheckinSchema, WeeklyCheckinSchema } from '../validation/checkin';
 import { getAuthenticatedUser } from './auth';
 import { withUser } from './safe-actions';
-import { convertFieldsToNumber } from '../utils';
+import { convertFieldsToNumber, getMonthDateRangeInUTC } from '../utils';
+import { getProfile } from '../data/profiles';
 
 export type MonthlyCheckins = {
   daily: DailyCheckin[];
@@ -15,12 +16,9 @@ export type MonthlyCheckins = {
 
 export const getMonthlyCheckins = withUser(
   async (user, date: Date): Promise<MonthlyCheckins> => {
-    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1)
-      .toISOString()
-      .slice(0, 10);
-    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-      .toISOString()
-      .slice(0, 10);
+    const profile = await getProfile(user.id);
+    const timeZone = profile?.time_zone || 'UTC';
+    const { startDateUTC, endDateUTC } = getMonthDateRangeInUTC(date, timeZone);
 
     const supabase = await createClient();
 
@@ -29,14 +27,14 @@ export const getMonthlyCheckins = withUser(
         .from('daily_checkins')
         .select('*')
         .eq('user_id', user.id)
-        .gte('date', startOfMonth)
-        .lte('date', endOfMonth),
+        .gte('date', startDateUTC.toISOString())
+        .lte('date', endDateUTC.toISOString()),
       supabase
         .from('weekly_checkins')
         .select('*')
         .eq('user_id', user.id)
-        .gte('date', startOfMonth)
-        .lte('date', endOfMonth),
+        .gte('date', startDateUTC.toISOString())
+        .lte('date', endDateUTC.toISOString()),
     ]);
     if (dailyResponse.error || weeklyResponse.error) {
       console.error(

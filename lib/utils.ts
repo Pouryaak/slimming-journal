@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { startOfMonth, endOfMonth } from 'date-fns';
+import { fromZonedTime } from 'date-fns-tz';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,4 +50,27 @@ export function formatDateForURL(date: Date): string {
   const offset = date.getTimezoneOffset();
   const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
   return adjustedDate.toISOString().split('T')[0];
+}
+
+export function getTodayInTimezone(timeZone: string = 'UTC'): string {
+  const today = new Date();
+
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: timeZone,
+  });
+
+  return formatter.format(today);
+}
+
+export function getMonthDateRangeInUTC(date: Date, timeZone: string) {
+  const start = startOfMonth(date);
+  const end = endOfMonth(date);
+
+  const startDateUTC = fromZonedTime(start, timeZone);
+  const endDateUTC = fromZonedTime(end, timeZone);
+
+  return { startDateUTC, endDateUTC };
 }

@@ -23,6 +23,7 @@ export type Profile = {
   weekly_weight_goal_kg: number | null;
   unit_system: 'metric' | 'imperial';
   week_start: 'saturday' | 'monday';
+  time_zone: string | null;
   created_at: string;
   updated_at: string;
 };
