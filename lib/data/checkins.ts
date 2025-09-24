@@ -2,7 +2,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { getStartOfWeek } from '../utils';
+import { getStartOfWeek, getTodayInTimezone } from '../utils';
 import { getProfile } from './profiles';
 import { getAuthenticatedUser } from '../actions/auth';
 
@@ -16,8 +16,10 @@ export async function getTodaysCheckin() {
   if (!user) {
     return null;
   }
+  const profile = await getProfile(user.id);
+  const userTimeZone = profile?.time_zone || 'UTC';
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayInTimezone(userTimeZone);
 
   const { data, error } = await supabase
     .from('daily_checkins')
