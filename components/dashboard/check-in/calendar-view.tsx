@@ -41,7 +41,7 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
   console.log(initialCheckins);
 
   return (
-    <div className="p-4">
+    <div>
       <div className="flex w-full flex-col items-center">
         <Calendar
           mode="single"
