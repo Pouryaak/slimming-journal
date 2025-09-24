@@ -3,6 +3,7 @@ import { EmptyState } from '@/components/dashboard/empty-state';
 import { getAuthenticatedUser } from '@/lib/actions/auth';
 import { getTodaysCheckin } from '@/lib/data/checkins';
 import { getProfile } from '@/lib/data/profiles';
+import { getGreetingByTimezone } from '@/lib/utils';
 import React from 'react';
 
 const DashboardPage = async () => {
@@ -21,10 +22,12 @@ const DashboardPage = async () => {
     return <div>Could not load profile.</div>;
   }
 
+  const greeting = getGreetingByTimezone(profile.time_zone || 'UTC');
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold">
-        Good Morning, {profile.name || 'User'}!
+        {greeting}, {profile.name || 'User'}!
       </h1>
       <p className="text-muted-foreground">
         Here&apos;s your summary for today.

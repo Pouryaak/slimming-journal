@@ -17,6 +17,8 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
+import Lottie from 'lottie-react';
+import noDataAnimation from '@/public/animations/no-data.json';
 
 // Define the shape of the data this component expects
 interface DataPoint {
@@ -54,7 +56,28 @@ export function TrendChart({
       }),
     }));
 
-  console.log(formattedData);
+  if (formattedData.length < 2) {
+    return (
+      <Card className="mt-3">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex h-80 w-full flex-col items-center justify-center text-center">
+            <Lottie
+              animationData={noDataAnimation}
+              loop={true}
+              className="h-40 w-40"
+            />
+            <p className="text-muted-foreground mt-4">
+              Not enough data to generate a trend chart yet.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="mt-3">

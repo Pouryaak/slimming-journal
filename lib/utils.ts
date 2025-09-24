@@ -74,3 +74,24 @@ export function getMonthDateRangeInUTC(date: Date, timeZone: string) {
 
   return { startDateUTC, endDateUTC };
 }
+
+export function getGreetingByTimezone(timeZone: string = 'UTC'): string {
+  const now = new Date();
+
+  const hourFormatter = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    hour12: false,
+    timeZone: timeZone,
+  });
+
+  const currentHour = parseInt(hourFormatter.format(now), 10);
+  console.log(currentHour);
+
+  if (currentHour >= 5 && currentHour < 12) {
+    return 'Good Morning';
+  } else if (currentHour >= 12 && currentHour < 18) {
+    return 'Good Afternoon';
+  } else {
+    return 'Good Evening';
+  }
+}
