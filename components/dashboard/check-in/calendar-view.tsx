@@ -43,17 +43,19 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
   return (
     <div>
       <div className="flex w-full flex-col items-center">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          modifiers={modifiers}
-          modifiersClassNames={{
-            daily: 'day-with-daily-dot',
-            weekly: 'day-with-weekly-dot',
-          }}
-          className="w-full rounded-md border"
-        />
+        <div className="h-fit w-full">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            modifiers={modifiers}
+            modifiersClassNames={{
+              daily: 'day-with-daily-dot',
+              weekly: 'day-with-weekly-dot',
+            }}
+            className="h-full w-full rounded-md border"
+          />
+        </div>
 
         <div className="mt-8 w-full max-w-md space-y-4">
           {!selectedDateDailyEntries && !selectedDateWeeklyEntries && (
