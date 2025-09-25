@@ -21,8 +21,6 @@ Slimming Journal is a personal health journal that combines **frictionless check
 
 ## 🧭 Feature Tour
 
-> Add screenshots later — placeholders below use a `/docs/screenshots` folder.
-
 1. **Home Dashboard**  
    _Greeting by local time; today’s state, quick actions, and progress context._  
    `![Screenshot: Home Dashboard](./docs/screenshots/01-dashboard.png)`
@@ -111,19 +109,6 @@ scripts/            # seed.ts (bulk-create sample data)
 
 - "Today" and monthly ranges are computed with the user’s **`time_zone`**.
 - Greetings (“Good morning/afternoon/evening”) and Telegram copy render dates in the user’s locale/time zone.
-
----
-
-## 🧪 Testing Approach (suggested)
-
-> The project is structured to be test‑friendly. Suggested coverage:
-
-- **Server actions**: happy path + validation errors for `upsertDailyCheckin` and `upsertWeeklyCheckin` (mock Supabase client).
-- **Utilities**: date range math (`getMonthDateRangeInUTC`, `getStartOfWeek`), numeric coercion helpers.
-- **Components**: form validation messages, disabled/enabled submit states, and “no data” state in charts.
-- **E2E (Playwright)**: sign up → onboarding → daily check‑in → weekly check‑in → reports.
-
-Add a `/tests` folder with Jest + ts-jest for unit tests and Playwright for E2E.
 
 ---
 
@@ -257,15 +242,3 @@ On the roadmap; designed to keep ingestion isolated from UI concerns.
 
 **Can I run without Telegram?**  
 Yes — it’s optional and off by default.
-
----
-
-## 👩‍⚖️ Notes for Reviewers (Atlassian)
-
-- The code favors **single responsibility** and **clean composition**: server actions wrap auth (`withUser`), data access and validation are isolated under `lib/`.
-- **Traceability**: actions revalidate precise routes; reports encapsulate formatting and deltas in `lib/reports.ts`.
-- **Maintainability**: form schemas and UI inputs are strongly typed; validation lives close to forms.
-- **Reliability**: date math centralizes in `lib/utils` to avoid off‑by‑one and TZ drift.
-- **Extensibility**: notifications abstracted behind tiny helpers; swapping providers is trivial.
-
-> If you’d like a diagram, drop an issue — happy to add a C4‑style component view.
