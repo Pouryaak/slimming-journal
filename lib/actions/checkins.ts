@@ -8,6 +8,10 @@ import { getAuthenticatedUser } from './auth';
 import { withUser } from './safe-actions';
 import { convertFieldsToNumber, getMonthDateRangeInUTC } from '../utils';
 import { getProfile } from '../data/profiles';
+import {
+  prepareAndSendTelegramMessage,
+  sendTelegramMessage,
+} from '../notifications';
 
 export type MonthlyCheckins = {
   daily: DailyCheckin[];
@@ -50,6 +54,10 @@ export const getMonthlyCheckins = withUser(
 
 export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
   const supabase = await createClient();
+
+  const profile = await getProfile(user.id);
+  const userName = profile?.name || 'A user';
+  const userTimeZone = profile?.time_zone || 'UTC';
 
   const rawFormData = Object.fromEntries(formData.entries());
 
@@ -97,6 +105,12 @@ export const upsertDailyCheckin = withUser(async (user, formData: FormData) => {
     console.error('Error upserting daily checkin:', result.error);
     return { status: 'error', error: 'Failed to save your check-in.' };
   }
+
+  prepareAndSendTelegramMessage(
+    validatedFields.data as DailyCheckin,
+    userName,
+    userTimeZone,
+  );
 
   revalidatePath('/check-in');
   revalidatePath('/dashboard');
