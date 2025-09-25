@@ -2,7 +2,7 @@
 
 import { upsertDailyCheckin } from '@/lib/actions/checkins';
 import { DailyCheckin } from '@/lib/data/checkins';
-import { ProfileFormState } from '@/lib/data/profiles';
+import { Profile, ProfileFormState } from '@/lib/data/profiles';
 import {
   DailyCheckinInput,
   DailyCheckinSchema,
@@ -40,9 +40,14 @@ function SubmitButton() {
 interface DailyCheckinFormProps {
   checkin: DailyCheckin | null;
   date: string;
+  profile: Profile;
 }
 
-const DailyCheckinForm = ({ checkin, date }: DailyCheckinFormProps) => {
+const DailyCheckinForm = ({
+  checkin,
+  date,
+  profile,
+}: DailyCheckinFormProps) => {
   const initialState: ProfileFormState = null;
   const [state, formAction] = useActionState(upsertDailyCheckin, initialState);
   const router = useRouter();
@@ -54,7 +59,7 @@ const DailyCheckinForm = ({ checkin, date }: DailyCheckinFormProps) => {
     defaultValues: {
       id: checkin?.id ?? undefined,
       date: checkin?.date ?? date,
-      calories_goal: checkin?.calories_goal ?? 2000,
+      calories_goal: checkin?.calories_goal ?? profile.base_calories ?? 0,
       calories_consumed: checkin?.calories_consumed ?? '',
       protein_consumed_g: checkin?.protein_consumed_g ?? '',
       carbs_consumed_g: checkin?.carbs_consumed_g ?? '',
@@ -246,13 +251,13 @@ const DailyCheckinForm = ({ checkin, date }: DailyCheckinFormProps) => {
                 name="water_ml"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="water">Water (ml)</FormLabel>
+                    <FormLabel htmlFor="water">Water (L)</FormLabel>
                     <FormControl>
                       <NumberField
                         field={field}
                         id="water"
-                        placeholder="e.g., 2000"
-                        step={50}
+                        placeholder="e.g., 1"
+                        step={0.05}
                       />
                     </FormControl>
                     <FormMessage />

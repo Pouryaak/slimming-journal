@@ -12,6 +12,8 @@ import {
   prepareAndSendTelegramMessage,
   sendTelegramMessage,
 } from '../notifications';
+import { formatReportForTelegram, generateWeeklyReport } from '../reports';
+import { WeeklyReportData } from '../types';
 
 export type MonthlyCheckins = {
   daily: DailyCheckin[];
@@ -150,16 +152,29 @@ export const upsertWeeklyCheckin = withUser(
         .from('weekly_checkins')
         .update(dataToUpsert)
         .eq('id', id)
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .select()
+        .single();
     } else {
       result = await supabase
         .from('weekly_checkins')
-        .insert({ ...dataToUpsert, user_id: user.id });
+        .insert({ ...dataToUpsert, user_id: user.id })
+        .select()
+        .single();
     }
 
     if (result.error) {
       console.error('Error upserting weekly checkin:', result.error);
       return { status: 'error', error: 'Failed to save your check-in.' };
+    }
+
+    if (result.data) {
+      console.log('Generating report for:', result.data);
+      generateWeeklyReport(result.data).then((reportMessage) => {
+        sendTelegramMessage(
+          formatReportForTelegram(reportMessage as WeeklyReportData),
+        );
+      });
     }
 
     revalidatePath('/check-in');

@@ -4,13 +4,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DailyCheckinForm from '@/components/dashboard/check-in/daily-checkin-form';
 import WeeklyCheckinForm from '@/components/dashboard/check-in/weekly-checkin-form';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Profile } from '@/lib/data/profiles';
 
 export function CheckinTabs({
   checkins,
   date,
+  profile,
 }: {
   checkins: any;
   date: string;
+  profile: Profile;
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -31,7 +34,11 @@ export function CheckinTabs({
       </TabsList>
 
       <TabsContent value="daily">
-        <DailyCheckinForm checkin={checkins?.daily ?? null} date={date} />
+        <DailyCheckinForm
+          checkin={checkins?.daily ?? null}
+          date={date}
+          profile={profile}
+        />
       </TabsContent>
 
       <TabsContent value="weekly">
