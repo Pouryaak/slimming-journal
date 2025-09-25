@@ -23,35 +23,35 @@ Slimming Journal is a personal health journal that combines **frictionless check
 
 1. **Home Dashboard**  
    _Greeting by local time; today’s state, quick actions, and progress context._  
-   `![Screenshot: Home Dashboard](./docs/screenshots/01-dashboard.png)`
+   ![Screenshot: Home Dashboard](./docs/screenshots/01-dashboard.png)
 
 2. **Calendar Check‑ins**  
    _Month view with dual indicators (daily • and weekly •). Select a date to view/edit._  
-   `![Screenshot: Calendar](./docs/screenshots/02-calendar.png)`
+   ![Screenshot: Calendar](./docs/screenshots/02-calendar.png)
 
 3. **Daily Check‑in**  
    _Calories goal vs consumed, macros, steps, water, fasting, and calories burned._  
-   `![Screenshot: Daily Check-in](./docs/screenshots/03-daily-checkin.png)`
+   ![Screenshot: Daily Check-in](./docs/screenshots/03-daily-checkin.png)
 
 4. **Weekly Check‑in**  
    _Weight (kg), Body Fat %, Muscle Mass — purposefully lean form._  
-   `![Screenshot: Weekly Check-in](./docs/screenshots/04-weekly-checkin.png)`
+   ![Screenshot: Weekly Check-in](./docs/screenshots/04-weekly-checkin.png)
 
 5. **Reports – My Progress**  
    _Three trend charts for the last 3 months with an elegant “no data yet” state._  
-   `![Screenshot: Reports](./docs/screenshots/05-reports.png)`
+   ![Screenshot: Reports](./docs/screenshots/05-reports.png)
 
 6. **Profile & Goals**  
    _Edit personal data, unit system, week start; set goals and base calories._  
-   `![Screenshot: Profile & Goals](./docs/screenshots/06-profile-goals.png)`
+   ![Screenshot: Profile & Goals](./docs/screenshots/06-profile-goals.png)
 
 7. **Onboarding (First Run)**  
    _Five short steps — name; body metrics & units; goal & weekly delta; week start; TZ._  
-   `![Screenshot: Onboarding](./docs/screenshots/07-onboarding.png)`
+   ![Screenshot: Onboarding](./docs/screenshots/07-onboarding.png)
 
 8. **Optional Notifications**  
    _Daily and weekly summaries can be sent to Telegram for a gentle nudge._  
-   `![Screenshot: Telegram Summary](./docs/screenshots/08-telegram.png)`
+   ![Screenshot: Telegram Summary](./docs/screenshots/08-telegram.png)
 
 ---
 
