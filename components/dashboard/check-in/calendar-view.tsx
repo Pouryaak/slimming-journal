@@ -53,7 +53,7 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
               daily: 'day-with-daily-dot',
               weekly: 'day-with-weekly-dot',
             }}
-            className="w-full"
+            className="w-full ![--cell-size:2.5rem]"
           />
         </div>
 
