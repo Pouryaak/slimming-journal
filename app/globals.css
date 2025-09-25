@@ -154,3 +154,7 @@
 .rdp-day--outside.day-with-weekly-dot::before {
   display: none;
 }
+
+.rdp {
+  height: auto !important;
+}

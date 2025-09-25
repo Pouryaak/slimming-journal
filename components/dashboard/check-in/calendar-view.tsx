@@ -43,7 +43,7 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
   return (
     <div>
       <div className="flex w-full flex-col items-center">
-        <div className="h-fit w-full">
+        <div className="w-full rounded-md border">
           <Calendar
             mode="single"
             selected={date}
@@ -53,7 +53,7 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
               daily: 'day-with-daily-dot',
               weekly: 'day-with-weekly-dot',
             }}
-            className="h-full w-full rounded-md border"
+            className="w-full"
           />
         </div>
 
