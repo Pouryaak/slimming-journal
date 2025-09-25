@@ -28,7 +28,7 @@ export const WeeklyCheckinSchema = z.object({
     z.string().uuid().optional(),
   ),
   date: z.string().date(),
-  weight_kg: uiNumber(z.number().int().min(0)),
+  weight_kg: uiNumber(z.number().min(0)),
   muscle_mass_kg: uiNumber(z.number().int().min(0)),
   body_fat_percentage: uiNumber(z.number().min(0).max(100)),
 });

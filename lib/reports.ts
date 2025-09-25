@@ -126,7 +126,7 @@ export async function generateWeeklyReport(
 
   const protein_avg = totals.protein_sum / numDays;
   const steps_avg = totals.steps_sum / numDays;
-  const water_avg_l = totals.water_sum / numDays / 1000;
+  const water_avg_l = totals.water_sum / numDays;
   const fasting_avg_h = totals.fasting_h_sum / numDays;
 
   return {
