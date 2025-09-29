@@ -43,7 +43,7 @@ export const prepareAndSendTelegramMessage = (
 🍞 Carbs: *${data.carbs_consumed_g}g*
 🔥 Burned: *${data.calories_burned?.toLocaleString()} kcal*
 👟 Steps: *${data.steps?.toLocaleString()}*
-💧 Water: *${data.water_ml?.toLocaleString()}L*
+💧 Water: *${data.water_ml?.toLocaleString()} Glass*
 ⏳ Fasted: *${data.fasting_hours} hours*
 
 Let's keep the momentum going! 👏

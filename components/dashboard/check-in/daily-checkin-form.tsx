@@ -251,7 +251,7 @@ const DailyCheckinForm = ({
                 name="water_ml"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="water">Water (L)</FormLabel>
+                    <FormLabel htmlFor="water">Water (Glass)</FormLabel>
                     <FormControl>
                       <NumberField
                         field={field}
