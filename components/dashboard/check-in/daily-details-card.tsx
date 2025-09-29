@@ -43,7 +43,7 @@ export function DailyDetailsCard({ checkin }: DailyDetailsProps) {
     },
     {
       label: 'Water',
-      value: `${checkin.water_ml?.toLocaleString()} ml`,
+      value: `${checkin.water_ml?.toLocaleString()} glasses`,
       icon: Droplets,
     },
     {
