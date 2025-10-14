@@ -1,0 +1,98 @@
+{
+  "id": "/",
+  "name": "Slimming Journal",
+  "short_name": "Journal",
+  "description": "Log daily calories, track progress, and view clear reports and charts to reach your goals.",
+  "lang": "en",
+  "dir": "ltr",
+
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "browser"],
+  "orientation": "any",
+
+  "theme_color": "#93E3A7",
+  "background_color": "#FFFFFF",
+
+  "categories": ["health", "fitness", "food", "productivity"],
+  "handle_links": "preferred",
+
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Daily Check-in",
+      "short_name": "Check-in",
+      "description": "Log today’s calories fast.",
+      "url": "/check-in",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Reports & Charts",
+      "short_name": "Reports",
+      "description": "View trends and analytics.",
+      "url": "/reports",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Update Goals",
+      "short_name": "Goals",
+      "description": "Adjust weight and calorie goals.",
+      "url": "/profile/goals",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+
+  "launch_handler": { "client_mode": "focus-existing" },
+  "prefer_related_applications": false
+}

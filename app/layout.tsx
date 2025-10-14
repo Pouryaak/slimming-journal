@@ -14,8 +14,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [{ url: '/favicon.ico' }],
+    apple: [{ url: '/icons/apple-icon-180.png', sizes: '180x180' }],
+  },
   title: 'Slimming Journal',
   description: 'A journal for tracking your slimming journey',
+  themeColor: '#93E3A7',
 };
 
 export default function RootLayout({
