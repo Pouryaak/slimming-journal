@@ -23,12 +23,14 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
   // Fetch check-ins when month changes
   useEffect(() => {
     const fetchMonthData = async () => {
-      // Skip fetch if it's the initial month (data already loaded)
+      // Check if it's the initial month
       const isInitialMonth =
         month.getMonth() === initialMonthRef.current.getMonth() &&
         month.getFullYear() === initialMonthRef.current.getFullYear();
 
       if (isInitialMonth) {
+        // Restore initial check-ins when navigating back to the initial month
+        setMonthlyCheckins(initialCheckins);
         return;
       }
 
@@ -44,7 +46,7 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
     };
 
     fetchMonthData();
-  }, [month]);
+  }, [month, initialCheckins]);
 
   const handleMonthChange = (newMonth: Date) => {
     setMonth(newMonth);
