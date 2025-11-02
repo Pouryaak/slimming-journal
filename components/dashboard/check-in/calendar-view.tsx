@@ -1,13 +1,13 @@
 'use client';
 
-import { Calendar } from '@/components/ui/calendar';
-import React, { useMemo, useState } from 'react';
-import { MonthlyCheckins } from '@/lib/actions/checkins';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { MonthlyCheckins, getMonthlyCheckins } from '@/lib/actions/checkins';
+import { formatDateForURL } from '@/lib/utils';
+import Link from 'next/link';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DailyDetailsCard } from './daily-details-card';
 import { WeeklyDetailsCard } from './weekly-details-card';
-import Link from 'next/link';
-import { formatDateForURL } from '@/lib/utils';
 
 interface CalendarViewProps {
   initialCheckins: MonthlyCheckins;
@@ -15,7 +15,40 @@ interface CalendarViewProps {
 
 const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [month, setMonth] = useState<Date>(new Date());
   const [monthlyCheckins, setMonthlyCheckins] = useState(initialCheckins);
+  const [isLoading, setIsLoading] = useState(false);
+  const initialMonthRef = useRef<Date>(new Date());
+
+  // Fetch check-ins when month changes
+  useEffect(() => {
+    const fetchMonthData = async () => {
+      // Skip fetch if it's the initial month (data already loaded)
+      const isInitialMonth =
+        month.getMonth() === initialMonthRef.current.getMonth() &&
+        month.getFullYear() === initialMonthRef.current.getFullYear();
+
+      if (isInitialMonth) {
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const data = await getMonthlyCheckins(null, month);
+        setMonthlyCheckins(data);
+      } catch (error) {
+        console.error('Error fetching monthly checkins:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMonthData();
+  }, [month]);
+
+  const handleMonthChange = (newMonth: Date) => {
+    setMonth(newMonth);
+  };
 
   const checkinUrl = (tab: 'daily' | 'weekly') =>
     date ? `/check-in/${formatDateForURL(date)}?tab=${tab}` : '#';
@@ -48,6 +81,8 @@ const CalendarView = ({ initialCheckins }: CalendarViewProps) => {
             mode="single"
             selected={date}
             onSelect={setDate}
+            month={month}
+            onMonthChange={handleMonthChange}
             modifiers={modifiers}
             modifiersClassNames={{
               daily: 'day-with-daily-dot',
